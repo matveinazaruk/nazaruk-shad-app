@@ -10,7 +10,7 @@ android {
         config {
             keyAlias keystoreProps['key.alias']
             keyPassword keystoreProps['key,password']
-            storeFile file(keystoreProps['store.file'])
+            storeFile rootProject.file(keystoreProps['store.file'])
             storePassword keystoreProps['store.password']
         }
     }

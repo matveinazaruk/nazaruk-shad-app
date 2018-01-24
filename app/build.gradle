@@ -24,7 +24,7 @@ android {
     signingConfigs {
         config {
             keyAlias keystoreProps['key.alias']
-            keyPassword keystoreProps['key,password']
+            keyPassword keystoreProps['key.password']
             storeFile rootProject.file(keystoreProps['store.file'])
             storePassword keystoreProps['store.password']
         }
@@ -43,6 +43,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+//            ext.betaDistributionGroupAliases = ''
         }
     }
 }

@@ -34,6 +34,9 @@ jobs:
       - store_artifacts:
           path: app/build/outputs/apk/
           destination: apks
+      - run:
+          name: Build
+          command: ./gradlew crashlyticsUploadDistributionRelease
 #      - deploy:
 #          name: Deploy APK.
 #          command: |

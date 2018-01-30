@@ -1,22 +1,28 @@
+defaults: &defaults
+  working_directory: ~/code
+  docker:
+    - image: circleci/android:api-25-alpha
+  environment:
+      JVM_OPTS: -Xmx3200m
+
+
 version: 2
 jobs:
   deploy-job:
-    working_directory: ~/code
+    <<: *defaults
     docker:
       - image: circleci/android:api-25-alpha
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
+      - attach_workspace:
+          at: ~/code
       - run:
-          name: Build
+          name: Upload to fabric
           command: ./gradlew crashlyticsUploadDistributionRelease
 
   build-job:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-25-alpha
-    environment:
-      JVM_OPTS: -Xmx3200m
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:

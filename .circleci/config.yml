@@ -1,0 +1,67 @@
+version: 2
+jobs:
+  deploy-job:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-25-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - run:
+          name: Build
+          command: ./gradlew crashlyticsUploadDistributionRelease
+
+  build-job:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-25-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Run Tests
+          command: ./gradlew lint test
+      - run:
+          name: Run Unit Tests
+          command: ./gradlew test
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: app/build/test-results
+      - run:
+          name: Build
+          command: ./gradlew assembleRelease
+      - store_artifacts:
+          path: app/build/outputs/apk/
+          destination: apks
+#      - deploy:
+#          name: Deploy APK.
+#          command: |
+#            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+#              bash ./scripts/deploy-hockey.sh
+#              bash ./scripts/deploy-fabric.sh
+#            fi
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build-job
+      - deploy-job:
+          requires:
+            - build-job
+          filters:
+            branches:
+              only: master
+

@@ -1,3 +1,6 @@
 <resources>
+    <string name="name">Matvei Nazaruk</string>
+    <string name="github_link">https://github.com/matveinazaruk</string>
     <string name="app_name">nazaruk-shad</string>
+    <string name="profile_decs">profile</string>
 </resources>
